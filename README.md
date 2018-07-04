@@ -4,8 +4,7 @@ Mvc ile Eticaret Projesi
 ## Kullanılan Teknolojiler ##
  - Asp.Net MVC
  - Entity Framework Code First
- - Singleton Pattern
- 
+ - Single Pattern (Tek context üzerinden  işlem yapmak için )
 
 
  
