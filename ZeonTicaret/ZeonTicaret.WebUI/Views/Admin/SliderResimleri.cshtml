@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Slider Resimleri";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+
+
+@* resim için enctype="multipart/form-data" bunu yapmalıyız.yoksa controllera resmi gönderemeyiz *@
+<form action="/Admin/SliderResimEkle" method="post" enctype="multipart/form-data">
+    @* Admin controllerdaki SliderResimEkle actionına git *@
+
+
+   
+    <br /><br /><br /><br />
+    <div class="form-group">
+        <label class="control-label col-md-3">Slider Resim</label>
+        <div class="controls col-md-9">
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+                <span class="btn btn-white btn-file">
+                    <span class="fileupload-new"><i class="icon-paper-clip"></i> Resim Seç</span>
+
+                    @* name verdik.controllerdaki parametredede aynı ismi vermeliyiz. *@
+                    <input type="file" class="default" name="fileUpload" />
+                </span>
+                <span class="fileupload-preview" style="margin-left:5px;"></span>
+                <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none; margin-left:5px;"></a>
+            </div>
+        </div>
+    </div>
+    <br /><br />
+
+
+    @* formu post etmek için *@
+    <input type="submit" name="name" value="Kaydet" class="btn btn-success" style="margin-left:350px" />
+
+
+</form>
+
+

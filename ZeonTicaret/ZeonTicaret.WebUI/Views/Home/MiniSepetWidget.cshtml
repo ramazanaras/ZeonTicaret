@@ -1,0 +1,123 @@
+﻿@* bu bir partial view'dir .*@
+
+
+<script src="~/Content/Zeon/js/jquery-1.10.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $(".urunSil").click(function UrunSil() {
+
+            var uId = $(this).attr("name");//ürün idyi aldık
+            $.ajax({
+                type: "GET",
+                url: "/Home/SepetUrunAdetDusur",
+                data: { id: uId },//parametre gönderiyoruz
+                success: function myfunction() {
+                 
+                    //ürünü sepetten çıkardıktan  sonra minisepet kısmındaki html'i yenilemek için
+                    $.ajax({
+                        type: "GET",
+                        url: "/Home/MiniSepetWidget",
+                        success: function myfunction(veri) {//veri actiondan gelen partial view'dir.html çıktısı olarak aldık.MiniSepetWidget.cshtml'i aldık
+
+
+                            $(".cart-all").html('');//önce temizledik
+                            $(".cart-all").html(veri);//sonra partial view'i bastık
+
+
+                        }
+
+
+
+                    });
+
+
+
+                }, error: function myfunction() {
+
+                    alert("errorr");
+                }
+
+
+
+
+            });
+
+
+
+        });
+
+
+
+
+    });
+
+
+</script>
+
+
+
+
+@model ZeonTicaret.WebUI.App_Classes.Sepet
+
+<div class="cart-all">
+    <i class="icon-19" title="19"></i>
+    @if (Model != null)
+    {
+        @Model.ToplamTutar.ToString("C2")
+    }
+    else
+    {
+        <span> 0 TL</span>
+    }
+    <div class="inside-cart">
+        <p>
+            @if (Model != null)
+            {
+                <span>Sepette Toplam @Model.Urunler.Sum(x => x.Adet) Adet Ürün Bulunmaktadır.</span>
+            }
+            else
+            {
+                <span>Sepette Toplam 0 Adet Ürün Bulunmaktadır.</span>
+            }
+
+
+        </p>
+        <ul>
+
+            @if (Model != null)
+            {
+
+                foreach (var item in Model.Urunler)
+                {
+                    <li>
+                        
+                        <div class="inside-cart-image">
+
+                            @if (item.Urun.Resims != null)
+                            {
+                                //küçük resmi bastık
+                                  <img src="@item.Urun.Resims.FirstOrDefault(x=>x.Varsayilan==true).OrtaYol" alt="product name" />
+                            }
+                      
+                        </div>
+                        @* foreach içinde olduğumuz için id yerine class verdik.çünkü class birden fazla olma özelliği var.id ise tekildir. *@
+                        <a class="urunSil" name="@item.Urun.Id">x</a>
+                       
+                            <a href="/Home/UrunDetay/@item.Urun.Adi">@item.Urun.Adi</a>
+                      
+                        @* c2 parasal yapıyor *@
+                        <p>Tutar @item.Tutar.ToString("C2")</p>
+                        <p>Adet @item.Adet</p>
+                    </li>
+                }
+
+            }
+
+
+
+
+        </ul>
+    </div>
+</div>

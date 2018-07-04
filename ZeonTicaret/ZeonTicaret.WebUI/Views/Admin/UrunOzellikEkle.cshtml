@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewBag.Title = "Urun Ozellik Ekle";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@model IEnumerable<ZeonTicaret.WebUI.Models.Urun>
+
+
+
+@* AdminLayoutta RenderSection(head) diye tanımlamıştık burda oraya değer atıyoruz. *@
+@section head{
+<script src="~/Content/Admin/js/jquery-1.8.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#urun").change(function myfunction() { //urun idli aşağıdaki select değiştiği anda burası çalışır
+
+              //  var id = $(this).val();//option value'daki değeri al
+                //var sonuc = id.split('-')[1];//kategoriid yi aldık  // <option value="urun.Id-urun.KategoriID">urun.Adi</option>
+             
+
+                //ürünün kategori idsi .burdanda ozelliktiplere erişecez. 
+                var kId = $(this).find("option:selected").attr("title");//select teki option'ını attribute 'ü title olanın değerini getir.
+              //  alert(kId);
+                
+
+
+                //AJAX
+                $.ajax({
+                    type: "GET", //public PartialViewResult UrunOzellikTipWidget(int? katId)  actionına Get ile gider.Üzerine HttpPost diye belirtmedik çünkü
+                    url: "/Admin/UrunOzellikTipWidget", // public PartialViewResult UrunOzellikTipWidget(int? katId) metoduna gider.
+                    data: { katId: kId },  // public PartialViewResult UrunOzellikTipWidget(int? katId)  metotdaki  katId ile burdaki katId aynı olmalı
+                    success: function myfunction(veri) {  //actiondan gelen değer veri'nin içinde tutulur.//actiondan partial view geliyor.
+                        //alert(veri);//partial view'i görüntülüyoruz//html çıktısı olarak 
+
+
+                        $("#tip").html('');//divin içini boşalt
+                        $("#tip").append(veri);//ucuna ekler
+                        
+
+
+
+
+
+                      //  $.ajax({
+                        //    type: "GET",
+                        //    url: "/Admin/UrunOzellikTipListele",
+                        //    data: { list: veri },  //    public string UrunOzellikTipListele(object list)  metoddaki list ile burdaki list aynı olmalı
+                        //    success: function myfunction(sb) { //actiondan gelen veri sb'de tutulur.
+
+                        //        alert("başarılı");
+                           
+
+                        //    },
+                        //    error: function () {
+                        //        alert("hata");//buraya düşmesinin sebebleri: yukarıdaki   url: "/Admin/UrunOzellikTipListele", diyoruz ama public string UrunOzellikTipListele(object list) actionı int değil object parametresi alıyor .rootingde biz defaultta int parametresi olduğu için actiona gidemiyor vede error'a düşüyor.errora düşmemek için url: "/Admin/UrunOzellikTipListele/"+veri, diyebiliriz.
+                        //    }
+
+
+                        //});
+
+
+
+                    }
+                    ,
+                    error: function () {
+                        alert("hata");
+                    }
+
+
+
+                });
+
+            });
+
+
+
+        });
+    </script>
+
+
+
+
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <section class="panel">
+            <header class="panel-heading">
+                Ürün Özellik Ekle
+            </header>
+            <div class="panel-body">
+                <form role="form" class="form-horizontal tasi-form" action="/Admin/UrunOzellikEkle" method="post">
+                    <br />
+                  
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Ürün:</label>
+                        <div class="col-lg-10">
+                            <select class="form-control m-bot15" name="UrunID" id="urun">
+                                @foreach (var urun in Model)
+                                {
+                                    <option value="@urun.Id" title="@urun.KategoriID">@urun.Adi</option>
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+
+
+
+                    <div id="tip">
+                        @* UrunOzellikTipWidget partial view'i geliyor. *@
+                    </div>
+
+
+
+                    <div id="deger">
+                        @* UrunOzellikDegerWidget partial view'i geliyor.yukarıdaki  <div id="tip"> tip idli divin içinde javascriptte yazdık. *@
+                    </div>
+
+
+                    @{
+                       // Html.RenderAction("UrunOzellikTipWidget", "Admin");  //AdminControllerdaki UrunOzellikTipWidget isimli actionı çağır dedik.o da bize bir partial view döner ve partial view'i buraya basar
+
+
+                        //Html.RenderAction("UrunOzellikDegerWidget", "Admin");//AdminControllerdaki UrunOzellikDegerWidget isimli actionı çağır dedik.o da bize bir partial view döner ve partial view'i buraya basar
+                    }
+            
+
+                    
+
+
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <button class="btn btn-danger" type="submit">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>

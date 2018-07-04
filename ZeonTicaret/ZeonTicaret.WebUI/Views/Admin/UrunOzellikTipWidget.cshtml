@@ -1,0 +1,59 @@
+﻿
+@* bu bir partial view'dir. *@
+
+
+@* modelin tipini verdik. *@
+@model IEnumerable<ZeonTicaret.WebUI.Models.OzellikTip>
+
+
+<script src="~/Content/Admin/js/jquery-1.8.3.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+       // alert("assdsasd")
+        //bu partial view runtimeda eklendiği için bizde change olayını buraya yazıyoruz.UrunOzellikEkle.cshtml'in içine yazınca olmadı
+
+        //idsi tip olan classı .m.bot-15 olan değiştiği anda
+        $("#tipler").change(function myfunction() {
+    
+            var id=  $(this).val();// value'yu aldık //<option value="tip.Id"tip.Adi</option>
+           // alert(id);//ÖzellikTipId (İşlemcinin,Ramin idsi falan)
+
+
+            $.ajax({
+                type:"GET",
+                url:"/Admin/UrunOzellikDegerWidget",
+                data: {tipId:id}, //public PartialViewResult UrunOzellikDegerWidget(int? tipId) metottaki tipId parametresi ile bizim verdiğimiz tipId aynı olmalı
+                success: function myfunction(veri) {//verinin içinde actiondan gelen partial view(UrunOzellikDegerWidget) var(html çıktısı)
+                    $("#deger").html('');
+                    $("#deger").html(veri);//partial view'i bastık.
+                },
+                error: function myfunction() {
+                    alert("hata");
+                }
+      
+            });
+
+
+        });
+      
+    });
+
+
+
+ 
+   
+</script>
+
+<div class="form-group">
+    <label class="col-lg-2 control-label">Özellik Tip:</label>
+    <div class="col-lg-10">
+        <select class="form-control m-bot15" name="OzellikTipId" id="tipler">
+            @foreach (var tip in Model)
+            {
+                <option value="@tip.Id">@tip.Adi</option>
+            }
+        </select>
+
+    </div>
+</div>

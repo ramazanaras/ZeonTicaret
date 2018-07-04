@@ -1,0 +1,113 @@
+﻿@* bu bir partial view'dir *@
+
+
+@model IEnumerable<ZeonTicaret.WebUI.Models.Urun>
+
+
+<script src="~/Content/Admin/js/jquery-1.8.3.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $(".sepeteAt").click(function () {
+            var uid = $(this).attr("name");//name attributendeki değeri oku. //urun idsi
+     
+            $.ajax({
+                type:"GET",
+                url: "/Home/SepeteEkle/",
+                data: { id: uid },//   public void SepeteEkle(int id) burdaki id ler aynı olmalı
+                success: function myfunction() {
+                    alert("Ürün Sepete Eklendi");
+
+                    //ürünü sepete ekledikten sonra minisepet kısmındaki html'i yenilemek için
+                    $.ajax({
+                        type: "GET",
+                        url: "/Home/MiniSepetWidget",
+                        success: function VeriGetir(veri) {//veri actiondan gelen partial view'dir.html çıktısı olarak aldık.MiniSepetWidget.cshtml'i aldık
+                            //alert(veri);
+
+                            $(".cart-all").html('');//önce temizledik
+                            $(".cart-all").html(veri);//sonra partial view'i bastık
+
+
+
+                        }
+
+
+
+                    });
+
+
+                },
+                error: function myfunction() {
+                    alert("Ürün Sepete  Eklenemedi");
+                }
+
+
+
+
+
+            });
+
+
+
+
+
+
+        });
+
+
+
+
+    });
+</script>
+
+<div class="box">
+    <div class="container">
+        <div class="tesla-carousel" data-tesla-plugin="carousel" data-tesla-container=".tesla-carousel-items" data-tesla-item=">div" data-tesla-autoplay="false" data-tesla-rotate="false">
+            <div class="site-title">
+                <ul class="wrapper-arrows">
+                    <li><i class="icon-517 prev" title="left arrow"></i></li>
+                    <li><i class="icon-501 next" title="right arrow"></i></li>
+                </ul>
+                <div class="site-inside"><span>Ürünler</span></div>
+            </div>
+            <div class="row">
+                <div class="tesla-carousel-items">
+
+                    @foreach (var urun in Model)
+                    {
+                        <div class="col-md-3 col-xs-6">
+                            <div class="product">
+                                <div class="product-cover">
+                                    <span class="product-action">
+
+                                    </span>
+                                    <div class="product-cover-hover"><span><a href="/Home/UrunDetay/@urun.Adi">Görüntüle</a></span></div>
+
+                                    @if (urun.Resims.Count>0 ) //lazy load
+                                    {
+                                        <img src="@urun.Resims.FirstOrDefault(x=>x.Varsayilan==true).OrtaYol" alt="product name" />
+                                    }
+
+                                </div>
+                                <div class="product-details">
+                                    <h1><a href="/Home/UrunDetay/@urun.Adi">@urun.Adi</a></h1>
+                                    <p>@urun.Aciklama</p>
+                                    <div class="product-price">
+
+                                        @* ajaxla yapıcaz *@
+                                        <a  class="sepeteAt" name="@urun.Id"> <!--id=sepeteAt yapmadık class=sepeteAt yaptık.çünkü id benzersizdir.bir tane olabilir.ama biz burda foreach yaptığımız için çoklu yani  class yapmamız gerekiyor.yoksa yukarıda ajaxla okurken sıkıntı çıktı.-->
+                                            <i class="icon-257" title="add to cart"></i>
+                                        </a>
+                                     
+                                       @urun.SatisFiyat
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
